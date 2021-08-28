@@ -1,0 +1,32 @@
+node
+{
+    def mavenHome=tool name:"maven 3.82"
+stage('checkoutcode')
+{
+git branch: 'development', credentialsId: '421cb36c-9eeb-428f-b9f4-c1a590bebe19', url: 'https://github.com/ec2-rakesk-cmp/maven-web-application.git'
+}
+stage('Build')
+{
+sh "${mavenHome}/bin/mvn clean package"
+}
+stage('sonarqubeReport'){
+    sh "${mavenHome}/bin/mvn clean sonar:sonar"
+}
+stage('uploadartifactintonexus')
+{
+    sh "${mavenHome}/bin/mvn clean deploy"
+}
+stage('deployappintoTomcat')
+{
+    sshagent(['38b707c0-600f-4b3e-9cda-c421dec31d2e']) {
+    sh "scp -o StrictHostKeyChecking=no target/maven-web-application.war ec2-user@3.109.214.78:/opt/apache-tomcat-9.0.52/webapps"
+}
+}    // some block
+stage('sendmailnotification'){
+    emailext body: '''build is completed
+
+
+Regards,
+dileep dowda''', subject: 'Build over..!!', to: 'dileep029mys@gmail.com'
+}
+}
