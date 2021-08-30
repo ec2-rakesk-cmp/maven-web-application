@@ -99,7 +99,7 @@
 	    <repository>
 	      <id>nexus</id>
 	      <name>dileep Releases Nexus Repository</name>
-	      <url>http://65.0.173.63:8081/devops/repository/facebook-release/</url>
+	      <url>http://65.0.173.63:8081/devops/repository/facebook-snapshot/</url>
 	    </repository>
 	    
 	    <snapshotRepository>
